@@ -1,0 +1,235 @@
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+ol, ul {
+    list-style: none;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+/* End Meyer reset */
+html, body {
+    height: 100%;
+}
+
+body {
+    background: linear-gradient(steelblue, white);
+    font-family: verdana;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    font-size: 0.8em;
+}
+
+thead {
+    background: linear-gradient(to right, #9B59B6, black);
+    color: white;
+    display: block;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    width: 100%;
+}
+
+thead th{
+    font-size: 1.5em;
+    padding: 5px;
+}
+
+tbody {
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 500px;
+    width: 100%;
+}
+
+thead th:first-child,
+td:first-child {
+    width: 50px;
+    text-align: center;
+}
+
+
+
+td {
+    font-size: 0.9em;
+    padding: 5px;
+    background-color: #BDC3C7;
+    font-weight: bold;
+    color: #2C3E50;
+    border-top: thin solid gray;
+}
+
+td:first-child {
+    border-left: 0;
+}
+
+/*
+tr:nth-child(2n) td {
+    background-color: #95A5A6;
+    color: #2C3E50;
+}*/
+
+table button {
+    border: none;
+    background-color: lightgray;
+    box-shadow: 2px 2px 2px black;
+    transition: box-shadow 3s linear;
+    transition: top 3s linear;
+    transition: left 3s linear;
+}
+
+
+table tr:not(.selected) button:hover {
+    background-color: #9B59B6;
+    color: white;
+}
+
+.selected td:last-child button,
+table button:active {
+    box-shadow: none;
+    position: relative;
+    left: 2px;
+    top: 2px;
+}
+
+table button:focus {
+    outline: none;
+}
+
+.container .selected td {
+    background-color: #9B59B6;
+    color: white;
+}
+
+tr:hover:not(.selected) td {
+    background-color: white;
+}
+
+
+header h1 {
+    float: left;
+    padding: 5px 0 5px 8px;
+    font-size: 3.5em;
+}
+
+#playlist {
+    float: right;
+    width: 400px;
+}
+
+
+header {
+    background: linear-gradient(to right, #9B59B6, black);
+    color: #ECF0F1;
+    height: 80px;
+}
+
+.content div {
+    width: 360px;
+    float: left;
+    margin: 10px 5px;
+}
+
+.uparrow:after {
+    content: "\25B4";
+}
+
+.downarrow:after {
+    content: "\25BE";
+}
+
+@media only screen and (max-width: 1125px) {
+    body {
+        background: lightsteelblue;
+    }
+
+    .content div {
+        display: block;
+        float: none;
+        text-align: center;
+        margin: 10px auto;
+    }
+
+    table {
+        margin: 0 auto;
+    }
+
+    tbody {
+        height: 150px;
+    }
+
+}
+
+@media only screen and (max-width: 780px) {
+
+    header h1 {
+        display: none;
+    }
+
+    #playlist {
+        display: inline-block;
+    }
+
+}
+
+@media only screen and (max-width: 400px) {
+    #playlist {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 360px) {
+    .content div {
+        width: 320px;
+    }
+
+    table {
+        font-size: 0.8em;
+    }
+
+    tbody td:nth-child(2) {
+        text-align: left;
+    }
+
+    tbody {
+        height: 100px;
+    }
+}
