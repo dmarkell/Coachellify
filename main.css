@@ -214,6 +214,11 @@ header {
     #playlist {
         width: 100%;
     }
+
+    #tracks th:nth-child(3),
+    #tracks td:nth-child(3) {
+        display: none;
+    }
 }
 
 @media only screen and (max-width: 360px) {
@@ -230,6 +235,6 @@ header {
     }
 
     tbody {
-        height: 100px;
+        height: 150px;
     }
 }

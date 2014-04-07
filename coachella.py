@@ -233,6 +233,7 @@ class Lookup:
         url = BASE + params
         resp = urllib2.urlopen(url)
         self.data = json.load(resp)
+        self.name = self.data[self.type]['name']
         results = self.data[self.type]["{}s".format(self.extra)]
         if self.type == 'artist':
             results = map(lambda x: x[self.extra], results)
@@ -261,20 +262,22 @@ def lineup_by_pop():
         print("Not found: {}".format(band.encode('utf-8')))
  
  
-def albums_by_artist(artist):
-    
-    result = Search('artist', artist)
-    top = result.top_hit
-    if not top:
-        return None
-    name = top['name'].encode('utf8')
-    uri = top['href']
+def albums_by_artist(artist, uri=None):
+        
+    if not uri:
+        result = Search('artist', artist)
+        top = result.top_hit
+        if not top:
+            return None
+        uri = top['href']
     result = Lookup(uri)
+    name = result.name.encode('utf8')
     album_map = lambda x: (
         (x['artist'], x['name']),
         x['href'])
     albums = map(album_map, result.results)
-    mask = list(set([el[0] for el in albums if el[0][0].encode('utf8') == name]))
+
+    mask = list(set([el[0] for el in albums if el[0][0].encode('utf8')]) == name)
     unique_albums = []
     for image in mask:
         album = filter(lambda x: x[0] == image, albums)[0]
@@ -293,10 +296,10 @@ def clean_track(track, album_info):
  
     return track
  
-def tracks_by_artist(artist):
+def tracks_by_artist(artist, uri=None):
     """Returns list of json tracks for artist query"""
  
-    albums = albums_by_artist(artist)
+    albums = albums_by_artist(artist, uri)
     if not albums:
         return None
     tracks = []
@@ -371,7 +374,7 @@ def build_pl_url(playlist):
  
     return url
 
-tracks = load_tracks('tracks1.csv')
+
 
 def write_artists_with_meta_to_json():
     artists = []
@@ -380,11 +383,66 @@ def write_artists_with_meta_to_json():
         if result.top_hit:
             artists.append(result.top_hit)
 
-    with open("lineup_json.txt", "w") as f:
+    with open("data/lineup_json.txt", "w") as f:
         f.write(json.dumps(artists))
 
-result = Search('artist', 'Anna Lunoe')
-print(json.dumps(result.top_hit))
+def strip_name(name):
+
+    name = name.split('(')[0].split('-')[0].split('[')[0].strip()
+    return name
+
+def filter_tracks(tracks):
+    unique = []
+    dupes = 0
+    for track in tracks:
+        filtered = unique
+        filtered = filter(lambda x: x['artist'] == track['artist'], filtered)
+        filtered = filter(lambda x: strip_name(x['name']) == strip_name(track['name']), filtered)
+        filtered = filter(lambda x: abs(float(x['length']) - float(track['length'])) < 3.0, filtered)
+        if len(filtered) == 0:
+            unique.append(track)
+        else:
+            dupes += 1
+
+    return unique, dupes
+
+
+def write_top_tracks_by_artist(size):
+
+    with open('data/lineup_json.txt', 'r') as f:
+        artists = json.load(f)
+
+    for num in ["7lIBLhQHKay3r1xtO3VtWT",  "1dqGS5sT6PE2wEvP1gROZC", "4jYpX9diAOBUU0iictJYiF"]:
+    #for artist in artists[51:]:
+        uri = "spotify:artist:{}".format(num)
+        #uri = artist['href']
+        tracks = tracks_by_artist(None, uri=uri)
+        if tracks:
+            unique, dupes = filter_tracks(tracks)
+            print "{}; removed: {}".format(artist['name'].encode('utf8'), dupes)
+            tracks = pop_list(unique, size)
+
+        try:
+            with open("data/tracklist.txt", "r") as f:
+                trackset = json.load(f)
+        except ValueError:
+            trackset = {}
+        
+        trackset[uri.split(":")[-1]] = tracks
+
+        with open("data/tracklist.txt", "w") as f:
+            f.write(json.dumps(trackset))
+
+#write_top_tracks_by_artist(25)
+
+with open("data/tracklist.txt", "r") as f:
+    data = json.load(f)
+print(len(data.keys()))
+print(data.values()[-1])
+for item in data.items():
+    if not item[1]:
+        print item[0]
+
 
 """
 tracks = load_tracks('tracks1.csv')

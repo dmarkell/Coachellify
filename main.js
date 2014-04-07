@@ -1,6 +1,3 @@
-var albums;
-var artists = [];
-var lookupBase = "http://ws.spotify.com/lookup/1/.json?"; // &extras=albumdetail for artist search
 
 var ajaxRequest = function(ajaxUrl) {
     var xhr;
@@ -16,6 +13,7 @@ var ajaxRequest = function(ajaxUrl) {
 }
 
 var getArtistUris = function() {
+    var artists = [];
     var searchArtistBase = "http://ws.spotify.com/search/1/artist.json?";
     for (var i = 0; i < 5; i++) {
         var ajaxUrl = searchArtistBase + 'q=' + lineup[i];
@@ -92,22 +90,12 @@ var getArtists = function() {
         "keys": ['popularity', 'name', 'href'],
         "max_length": [null, 20, null],
         "fixed_dec": [1, null, null],
-        "button_event": [null, null, 'getAlbums'],
-        "button_text": [null, null, 'Albums&nbsp;>']
+        "button_event": [null, null, 'getTracks'],
+        "button_text": [null, null, 'Tracks']
     }
-    table = makeTable(artists, config);
+    var table = makeTable(artists, config);
     results.innerHTML = table;
 };
-
-var updateArtistSelector = function() {
-    var artistSelector = document.getElementById("artists");
-    var artistOptions = '';
-    for (var i = 0; i < lineup.length; i++) {
-        artistOptions += '<option value="' + lineup[i]['href'] + '">' + lineup[i]['name'] + '</option>';
-    }
-    artistSelector.innerHTML = artistOptions;
-    getAlbums();
-}
 
 var toggleSelectedRow = function(tr) {
     var table = tr.parentNode;
@@ -122,48 +110,20 @@ var toggleSelectedRow = function(tr) {
     }
 }
 
-var getAlbums = function(tr, uri) {
-    toggleSelectedRow(tr);
-    document.getElementById("albums").innerHTML = "";
-    document.getElementById("tracks").innerHTML = "";
-    var results = document.getElementById("albums");
-    var ajaxUrl = lookupBase + 'uri=' + uri + '&extras=albumdetail';
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status==200) {
-            var data = JSON.parse(xhr.responseText);
-            var artist = data['artist']['name'];
-            albums = data['artist']['albums'];
-            albums = albums.map(function(a){ return a.album });
-            albums = albums.filter(function(a){ return a.artist == artist});
-            albums = uniqueOf(albums, ['name', 'released']);
-            albums = albums.sort(function(a,b) { return b.released - a.released; });
-            var config = {
-                "heads": ['Year', 'Name', ''],
-                "keys": ['released', 'name', 'href'],
-                "max_length": [null, 20, null],
-                "fixed_dec": [null, null, null],
-                "button_event": [null, null, 'getTracks'],
-                "button_text": [null, null, 'Tracks&nbsp;>']
-            }   
-            table = makeTable(albums, config);
-            results.innerHTML = table;
-            };
-        };
-    xhr.open("GET", ajaxUrl, true);
-    xhr.send();
-};
-
 var getTracks = function(tr, uri) {
     toggleSelectedRow(tr);
     var artistSelector = document.getElementById("artists");
     var results = document.getElementById("tracks");
-    var ajaxUrl = lookupBase + 'uri=' + uri + '&extras=trackdetail';
+    var ajaxUrl = "https://dl.dropboxusercontent.com/u/29149143/coachella.txt";
+    //var lookupBase = "http://ws.spotify.com/lookup/1/.json?";
+    //var ajaxUrl = lookupBase + 'uri=' + uri + '&extras=trackdetail';
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status==200) {
             var data = JSON.parse(xhr.responseText);
-            tracks = data['album']['tracks'];
+            var pieces = uri.split(":");
+            var tracks = data[pieces[pieces.length-1]];
+            //var tracks = data['album']['tracks'];
             var config = {
                 "heads": ['Pop', 'Name', '', ''],
                 "keys": ['popularity', 'name', 'href', 'href'],
@@ -172,7 +132,7 @@ var getTracks = function(tr, uri) {
                 "button_event": [null, null, 'addTrack', 'playTrack'],
                 "button_text": [null, null, 'Add&nbsp;Track', 'Play']
             }   
-            table = makeTable(tracks, config);
+            var table = makeTable(tracks, config);
             results.innerHTML = table;
             };
         };
@@ -205,15 +165,6 @@ var addTrack = function(tr, uri) {
     uris.push(uri_num);
     console.log(tracksetBase + uris.join(","));
     iframe.src = tracksetBase + uris.join(",");
-
 }
 
-var initiate = function() {    
-    getArtists();
-    //var tr = document.getElementById("artists").getElementsByTagName("tr")[1];
-    //tr.querySelector("button").click();
-    //var tr = document.getElementById("albums").getElementsByTagName("tr")[1];
-    //tr.querySelector("button").click();
-}
-
-initiate();
+getArtists();
