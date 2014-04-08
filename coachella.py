@@ -374,8 +374,6 @@ def build_pl_url(playlist):
  
     return url
 
-
-
 def write_artists_with_meta_to_json():
     artists = []
     for name in lineup:
