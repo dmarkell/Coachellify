@@ -197,7 +197,17 @@ header {
     content: "\25BE";
 }
 
-@media only screen and (max-width: 1125px) {
+
+@media only screen and (max-width: 760px) {
+
+    header h1 {
+        display: none;
+    }
+
+    #playlist {
+        display: inline-block;
+    }
+
     body {
         background: lightsteelblue;
     }
@@ -215,18 +225,6 @@ header {
 
     tbody {
         height: 150px;
-    }
-
-}
-
-@media only screen and (max-width: 780px) {
-
-    header h1 {
-        display: none;
-    }
-
-    #playlist {
-        display: inline-block;
     }
 
 }
