@@ -101,11 +101,6 @@ td:first-child {
     border-left: 0;
 }
 
-/*
-tr:nth-child(2n) td {
-    background-color: #95A5A6;
-    color: #2C3E50;
-}*/
 
 table button {
     border: none;
@@ -116,6 +111,32 @@ table button {
     transition: left 3s linear;
 }
 
+.loading:after {
+    position: relative;
+    top: 50px;
+    font-size: 2em;
+    content: "Loading...";
+    animation: fade 1s linear infinite alternate;
+    -webkit-animation: fade 1s linear infinite alternate;
+}
+
+#playlist.loading:after {
+    position: absolute;
+    top:20px;
+    right: 100px;
+}
+
+@keyframes fade
+{
+from  { opacity: 1;}
+to    { opacity: 0;}
+}
+
+@-webkit-keyframes fade
+{
+from  { opacity: 1;}
+to    { opacity: 0;}
+}
 
 table tr:not(.selected) button:hover {
     background-color: #9B59B6;
