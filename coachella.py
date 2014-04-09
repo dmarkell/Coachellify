@@ -410,10 +410,8 @@ def write_top_tracks_by_artist(size):
     with open('data/lineup_json.txt', 'r') as f:
         artists = json.load(f)
 
-    for num in ["7lIBLhQHKay3r1xtO3VtWT",  "1dqGS5sT6PE2wEvP1gROZC", "4jYpX9diAOBUU0iictJYiF"]:
-    #for artist in artists[51:]:
-        uri = "spotify:artist:{}".format(num)
-        #uri = artist['href']
+    for artist in artists:
+        uri = artist['href']
         tracks = tracks_by_artist(None, uri=uri)
         if tracks:
             unique, dupes = filter_tracks(tracks)
@@ -432,48 +430,3 @@ def write_top_tracks_by_artist(size):
             f.write(json.dumps(trackset))
 
 #write_top_tracks_by_artist(25)
-
-with open("data/tracklist.txt", "r") as f:
-    data = json.load(f)
-print(len(data.keys()))
-print(data.values()[-1])
-for item in data.items():
-    if not item[1]:
-        print item[0]
-
-
-"""
-tracks = load_tracks('tracks1.csv')
-tracks = load_tracks_http("https://dl.dropboxusercontent.com/u/29149143/coachella.csv")
- 
-top_tracks = []
-artists = map(lambda x:x['artist'],tracks)
-artists = list(set(artists))
- 
-for artist in artists:
-    filt = lambda x:x['artist']==artist
-    filtered = filter(filt, tracks)
-    top = pop_list(filtered, 2)
-    top_tracks += top
- 
-# Get just a subset of the most popular
-
-top_tracks = pop_list(top_tracks, 200)
-
-tot_length = 0
-uris = []
-for track in top_tracks:
-    length = float(track['length'])
-    uri = track['href'].split(':')[-1]
-    uris.append(uri)
-    tot_length += length
-
-print("Total length: {} mins".format(
-        tot_length / 60))
-
-
-playlist = ",".join(uris)
-print(playlist)
-print(len(playlist))
-
-"""
